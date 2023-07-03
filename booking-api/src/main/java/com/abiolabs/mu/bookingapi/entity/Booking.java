@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "booking")
+@Table(name = "BOOKING")
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -21,10 +21,11 @@ public class Booking {
     @Column(name = "ID", unique = true, nullable = false)
     private long id;
 
-    @Column(name = "DATE_TIME",unique = true,nullable = false)
+    @Column(name = "DATE_TIME", unique = true, nullable = false)
     private LocalDateTime dateTime;
 
-    @Column(name = "STATUS",nullable = false)
+    @Column(name = "STATUS", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Status status;
+
 }
