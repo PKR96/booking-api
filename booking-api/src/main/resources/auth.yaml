@@ -1,0 +1,4 @@
+jwt:
+  session:
+    password: Natec1024
+    time: 86400000

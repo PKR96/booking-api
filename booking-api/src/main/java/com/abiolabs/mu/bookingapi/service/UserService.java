@@ -33,7 +33,7 @@ public class UserService {
                     .userName(user.getUserName())
                     .email(user.getEmail())
                     .password(user.getPassword())
-                    .token(JWTUtils.generateJWT(user.getUserName(), user.getRoles()))
+                    .token(new JWTUtils().generateJWT(user.getUserName(), user.getRoles()))
                     .roles(user.getRoles())
                     .build();
            return userRepository.save(newUser);
