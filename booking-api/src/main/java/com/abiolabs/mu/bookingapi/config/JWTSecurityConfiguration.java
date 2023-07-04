@@ -12,6 +12,7 @@ public class JWTSecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/auth/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

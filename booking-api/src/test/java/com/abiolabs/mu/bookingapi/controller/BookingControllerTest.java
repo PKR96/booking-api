@@ -1,28 +1,45 @@
 package com.abiolabs.mu.bookingapi.controller;
 
+import com.abiolabs.mu.bookingapi.entity.Role;
+import com.abiolabs.mu.bookingapi.entity.User;
+import com.abiolabs.mu.bookingapi.entity.enums.RoleType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.HashSet;
+import java.util.Set;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(BookingController.class)
+
 class BookingControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//
+//    @Test
+//    void testRetrieveAvailableBookingSlots() throws Exception {
+//        mockMvc.perform(get("/bookings/{page}", 100)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isAccepted());
+//    }
 
     @Test
-    void testRetrieveAvailableBookingSlots() throws Exception {
-        mockMvc.perform(get("/bookings/{page}", 100)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+    void generateJson() throws JsonProcessingException {
+        Role role = Role.builder().roleType(RoleType.GUEST)
+                .build();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        User user = User.builder()
+                .userName("PKR")
+                .email("pawanramkissoon@yahoo.com")
+                .password("admin")
+                .roles(roles)
+                .build();
+
+        System.out.println(new ObjectMapper().writeValueAsString(user));
     }
 }

@@ -1,15 +1,16 @@
 package com.abiolabs.mu.bookingapi.entity;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -19,9 +20,9 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private long userId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long userId;
 
     @Column(name = "USERNAME", unique = true, nullable = false)
     @NotNull
@@ -40,9 +41,9 @@ public class User {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinTable(name = "USER_ROLE",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    @JoinTable(name = "USERS_ROLES",
+            joinColumns = @JoinColumn(name = "USERS_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLES_ID"))
     private Set<Role> roles = new HashSet<>();
 
     @Transient
