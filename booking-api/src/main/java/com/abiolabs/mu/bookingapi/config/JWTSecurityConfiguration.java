@@ -18,6 +18,8 @@ public class JWTSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginProcessingUrl("/auth/process-login")
                 .defaultSuccessUrl("/dashboard")
-                .permitAll();
+                .permitAll()
+                .and()
+                .headers().frameOptions().disable();
     }
 }

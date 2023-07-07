@@ -20,7 +20,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID", unique = true, nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "ROLE_TYPE", nullable = false)
     @Enumerated(value = EnumType.STRING)

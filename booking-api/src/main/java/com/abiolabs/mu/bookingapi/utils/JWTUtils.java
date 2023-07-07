@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -21,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
 public class JWTUtils {
 
     @Value("${jwt.session.time}")
@@ -29,15 +32,16 @@ public class JWTUtils {
     @Value("${jwt.session.password}")
     private String password;
 
-    private final Key key;
+    private Key key;
 
 
-    public JWTUtils() {
+    @PostConstruct
+    public void initVariables() {
         byte[] keyBytes = password.getBytes();
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJWT(String username, Set<Role> roles) throws NoSuchAlgorithmException {
+    public String generateJWT(String username, Set<Role> roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("roles", roles)

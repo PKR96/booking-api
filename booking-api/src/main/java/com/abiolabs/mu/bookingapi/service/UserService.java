@@ -5,6 +5,7 @@ import com.abiolabs.mu.bookingapi.repository.UserRepository;
 import com.abiolabs.mu.bookingapi.utils.JWTUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +16,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -28,19 +30,12 @@ public class UserService {
     }
 
     public User saveUser(User user){
-        try {
            User newUser = User.builder()
                     .userName(user.getUserName())
                     .email(user.getEmail())
                     .password(user.getPassword())
-                    .token(new JWTUtils().generateJWT(user.getUserName(), user.getRoles()))
                     .roles(user.getRoles())
                     .build();
            return userRepository.save(newUser);
-        }
-        catch (NoSuchAlgorithmException noSuchAlgorithmException){
-            log.error("Error in algorithm: {0}", noSuchAlgorithmException);
-        }
-        return null;
     }
 }

@@ -1,4 +1,5 @@
+#password=NatecAvaMedical10242932323208
 jwt:
   session:
-    password: Natec1024
+    password: 'TmF0ZWNBdmFNZWRpY2FsMTAyNDI5MzIzMjMyMDg='
     time: 86400000

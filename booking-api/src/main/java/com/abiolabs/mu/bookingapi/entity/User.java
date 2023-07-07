@@ -40,12 +40,9 @@ public class User {
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
-    })
+    },fetch = FetchType.LAZY)
     @JoinTable(name = "USERS_ROLES",
             joinColumns = @JoinColumn(name = "USERS_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLES_ID"))
     private Set<Role> roles = new HashSet<>();
-
-    @Transient
-    private String token;
 }
