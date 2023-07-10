@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,15 +31,15 @@ public class BookingService {
     }
 
     public List<Booking> getListOfBookings(int page) {
-        Pageable bookingSize = PageRequest.of(page,100);
+        Pageable bookingSize = PageRequest.of(page, 100);
         Page<Booking> bookingPage = this.bookingRepository.findAllFromCurrentDateTime(LocalDateTime.now(), bookingSize);
         return bookingPage.hasContent() ? bookingPage.getContent() : new ArrayList<>();
     }
 
     @Transactional
-    public void saveBooking(String date, String time){
-        String dateTimeString = date + " " + time+ ":00.000";
-        String userName =  SecurityContextHolder.getContext().getAuthentication().getName();
+    public void saveBooking(String date, String time) {
+        String dateTimeString = date + " " + time;
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUserName(userName);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);

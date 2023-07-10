@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -29,7 +28,7 @@ public class BookingController {
 
     @PostMapping("/{selectedDate}/{selectedTime}")
     public ResponseEntity<Void> saveBooking(@PathVariable String selectedDate, @PathVariable String selectedTime) {
-        this.bookingService.saveBooking(selectedDate,selectedTime);
+        this.bookingService.saveBooking(selectedDate, selectedTime);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

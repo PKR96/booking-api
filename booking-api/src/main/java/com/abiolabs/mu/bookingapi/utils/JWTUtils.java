@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +80,7 @@ public class JWTUtils {
             return null;
         }
         String userName = claims.getSubject();
-        List<Map<String,String>> roles = claims.get("roles", List.class);
+        List<Map<String, String>> roles = claims.get("roles", List.class);
         List<SimpleGrantedAuthority> authorityList = roles
                 .stream()
                 .map(roleMap -> roleMap.get("roleType"))

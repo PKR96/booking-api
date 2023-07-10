@@ -51,11 +51,11 @@ public class AuthenticationController {
     public ResponseEntity<Object> login(@RequestBody @Valid User user) {
         User dbUser = userService.getUserByUserName(user.getUserName());
         Map<String, String> messageMap = new HashMap<>();
-        if(dbUser == null){
+        if (dbUser == null) {
             messageMap.put("error message", "Invalid username");
             return new ResponseEntity<>(messageMap, HttpStatus.UNAUTHORIZED);
         }
-        if (!BCrypt.checkpw(user.getPassword(),dbUser.getPassword())) {
+        if (!BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
             messageMap.put("error message", "Invalid password");
             return new ResponseEntity<>(messageMap, HttpStatus.UNAUTHORIZED);
         }
