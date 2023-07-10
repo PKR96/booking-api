@@ -14,6 +14,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Booking findFirstByOrderByDateTimeDesc();
 
-    @Query("SELECT b FROM Booking b WHERE b.dateTime >= :currentDateTime")
+    @Query("SELECT b FROM Booking b WHERE b.dateTime >= :currentDateTime ORDER BY b.dateTime ASC")
     Page<Booking> findAllFromCurrentDateTime(LocalDateTime currentDateTime, Pageable pageable);
+
+    Booking findByDateTime(LocalDateTime localDateTime);
 }

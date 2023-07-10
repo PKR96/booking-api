@@ -9,20 +9,25 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 @Component
 @Slf4j
+@Transactional
 public class BookingCronJob {
 
     private final BookingRepository bookingRepository;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+
+    private static final int MONTHS = 3;
 
     private final Predicate<LocalDateTime> isWeekend = dateTime -> dateTime.getDayOfWeek() == DayOfWeek.SATURDAY || dateTime.getDayOfWeek() == DayOfWeek.SUNDAY;
 
@@ -31,8 +36,8 @@ public class BookingCronJob {
         this.bookingRepository = bookingRepository;
     }
 
-    @Scheduled(cron = "0 0 0 L * ?")
-    @Transactional
+    @Scheduled(cron = "0 0 18 L * ?")
+    @PostConstruct
     public void generateBookingEntries() {
         List<Booking> bookingsToSave = new ArrayList<>();
         this.setLatestLocalDateTimeIfDataExists();
@@ -69,15 +74,20 @@ public class BookingCronJob {
     }
 
     private void setLatestLocalDateTimeIfDataExists() {
-        Booking booking = bookingRepository.findFirstByOrderByDateTimeDesc();
+        Booking lastBooking = bookingRepository.findFirstByOrderByDateTimeDesc();
         LocalDateTime startDate;
         LocalDateTime endDate;
-        if (booking != null) {
-            startDate = booking.getDateTime().plusDays(1).withHour(8).withMinute(0).withSecond(0);
-            endDate = booking.getDateTime().plusMonths(1).withDayOfMonth(1).minusDays(1).withHour(17).withMinute(0).withSecond(0);
+        if (lastBooking != null && lastBooking.getDateTime().isAfter(LocalDateTime.now())) {
+            if (this.isDateRangeLessThanNumberOfMonths(LocalDateTime.now(), lastBooking.getDateTime())) {
+                startDate = lastBooking.getDateTime();
+                endDate = LocalDateTime.now().plusMonths(MONTHS).withDayOfMonth(1).minusDays(1).withHour(17).withMinute(0).withSecond(0);
+            } else {
+                startDate = lastBooking.getDateTime().plusDays(1).withHour(8).withMinute(0).withSecond(0);
+                endDate = lastBooking.getDateTime().plusMonths(1).withDayOfMonth(1).minusDays(1).withHour(17).withMinute(0).withSecond(0);
+            }
         } else {
-            startDate = LocalDateTime.now().plusMonths(1).withDayOfMonth(1).withHour(8).withMinute(0).withSecond(0);
-            endDate = startDate.plusMonths(3).withDayOfMonth(1).minusDays(1).withHour(17).withMinute(0).withSecond(0);
+            startDate = LocalDateTime.now().plusDays(1).withHour(8).withMinute(0).withSecond(0);
+            endDate = startDate.plusMonths(MONTHS).withDayOfMonth(1).minusDays(1).withHour(17).withMinute(0).withSecond(0);
         }
         this.setStartAndEndDate(startDate, endDate);
     }
@@ -85,5 +95,9 @@ public class BookingCronJob {
     private void setStartAndEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    private boolean isDateRangeLessThanNumberOfMonths(LocalDateTime startDate, LocalDateTime endDate) {
+        return ChronoUnit.MONTHS.between(endDate, startDate) < MONTHS;
     }
 }

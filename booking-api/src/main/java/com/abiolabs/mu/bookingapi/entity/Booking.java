@@ -28,4 +28,7 @@ public class Booking {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
 }

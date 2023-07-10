@@ -45,4 +45,7 @@ public class User {
             joinColumns = @JoinColumn(name = "USERS_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLES_ID"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Set<Booking> bookings = new HashSet<>();
 }

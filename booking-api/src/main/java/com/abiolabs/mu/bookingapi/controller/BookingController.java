@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping(value = "/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -21,15 +21,15 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @GetMapping()
+    @GetMapping("/{page}")
     @ResponseBody
-    public ResponseEntity<List<Booking>> retrieveAvailableBookingSlots() {
-        return new ResponseEntity<>(this.bookingService.getListOfBookings(), HttpStatus.ACCEPTED);
+    public ResponseEntity<List<Booking>> retrieveAvailableBookingSlots(@PathVariable int page) {
+        return new ResponseEntity<>(this.bookingService.getListOfBookings(page), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping()
-    public ResponseEntity<Void> saveBooking(@RequestBody LocalDateTime dateTimeBooked) {
-        this.bookingService.saveBooking(dateTimeBooked);
+    @PostMapping("/{selectedDate}/{selectedTime}")
+    public ResponseEntity<Void> saveBooking(@PathVariable String selectedDate, @PathVariable String selectedTime) {
+        this.bookingService.saveBooking(selectedDate,selectedTime);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

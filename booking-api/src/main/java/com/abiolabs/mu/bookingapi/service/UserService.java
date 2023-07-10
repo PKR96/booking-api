@@ -6,6 +6,7 @@ import com.abiolabs.mu.bookingapi.utils.JWTUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -33,9 +34,9 @@ public class UserService {
            User newUser = User.builder()
                     .userName(user.getUserName())
                     .email(user.getEmail())
-                    .password(user.getPassword())
                     .roles(user.getRoles())
                     .build();
+           newUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
            return userRepository.save(newUser);
     }
 }

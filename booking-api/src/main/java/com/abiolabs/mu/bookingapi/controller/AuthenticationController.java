@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,23 @@ public class AuthenticationController {
         return ResponseEntity.ok()
                 .headers(getHttpHeadersWithJWT(user))
                 .body(userService.saveUser(user));
+    }
+
+    @PostMapping(value = "/login")
+    @ResponseBody
+    public ResponseEntity<Object> login(@RequestBody @Valid User user) {
+        User dbUser = userService.getUserByUserName(user.getUserName());
+        Map<String, String> messageMap = new HashMap<>();
+        if(dbUser == null){
+            messageMap.put("error message", "Invalid username");
+            return new ResponseEntity<>(messageMap, HttpStatus.UNAUTHORIZED);
+        }
+        if (!BCrypt.checkpw(user.getPassword(),dbUser.getPassword())) {
+            messageMap.put("error message", "Invalid password");
+            return new ResponseEntity<>(messageMap, HttpStatus.UNAUTHORIZED);
+        }
+        HttpHeaders httpHeaders = getHttpHeadersWithJWT(user);
+        return ResponseEntity.ok().headers(httpHeaders).body(user);
     }
 
     private ResponseEntity<Object> getResponseEntityForExistingUser(Map<String, String> messageMap, User user) {
